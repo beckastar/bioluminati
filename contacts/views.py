@@ -11,7 +11,8 @@ from django.views.generic import CreateView
 from django.test.client import Client 
 from django.test.client import RequestFactory
 from django.test import LiveServerTestCase
-from selenium.webdriver.firefox.webdriver import WebDriver 
+from selenium.webdriver.firefox.webdriver import WebDriver  
+from unittest import TestCase
 
 
 #general view 
