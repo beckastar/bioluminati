@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1> Contacts</h1>
+
+<ul>
+{% for contact in object_list %}
+<li class="contact">{{ contact }}</li>
+{% endfor %}
+</ul>
+<a href= "{% url "contects-new" %}">add contact</a>
+{% endblock %}
