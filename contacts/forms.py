@@ -19,7 +19,7 @@ class ContactForm(forms.ModelForm):
 		if kwargs.get('instance'):
 
 			email = kwargs['instance'].email
-			kwargs.setdefault('initial', {}['confirm_email']=email)
+			kwargs.setdefault('initial', {})['confirm_email']=email
 
 		return super(ContactForm, self).__init__(*args, **kwargs)
 		#clean method validates all the fields available in cleaned data dictionary
