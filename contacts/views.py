@@ -12,8 +12,14 @@ from django.test.client import Client
 from django.test.client import RequestFactory
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver  
+#missing from tutorial; this broke the whole thing
 from unittest import TestCase
-
+from django.views.generic import UpdateView
+#for deleting contacts
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.db import models 
+import forms 
 
 #general view 
 def hello_world(request):
@@ -35,9 +41,19 @@ class CreateContactView(CreateView):
 
 	model = Contact
 	template_name = 'edit_contact.html'
+	#tells view to use extra field in forms.py
+	form_class = forms.ContactForm
 
 	def get_success_url(self):
 		return reverse('contacts-list')
+#information about where the formshould redirect to the context
+
+	def get_context_data(self, **kwargs):
+
+		context = super(CreateContactView, self).get_context_data(**kwargs)
+		context['action'] = reverse('contacts-new')
+
+		return context
 
 class ContactListViewTest(TestCase):
 
@@ -99,4 +115,40 @@ class ContactListIntegrationTests(LiveServerTestCase):
 		self.selenium.find_elements_by_css_selector('.contact')[-1].text,'test contact'
 		)
 
+#allows us to edit contacts
+class UpdateContactView(UpdateView):
+	model = Contact
+	template_name = 'edit_contact.html'
+	#references forms.py
+	form_class = forms.ContactForm
 
+	def get_success_url(self):
+		return reverse('contacts-list')
+
+	def get_context_data(self, **kwargs):
+
+		context = super(UpdateContactView, self).get_context_data(**kwargs)
+		context['action'] = reverse('contacts-edit',
+			kwargs= {'pk': self.get_object().id})
+
+		return context
+
+class DeleteContactView(DeleteView):
+
+    model = Contact
+    template_name = 'delete_contact.html'
+
+    def get_success_url(self):
+        return reverse('contacts-list')
+
+
+class ContactView(DetailView):
+
+	model = Contact
+	template_name = 'contact.html'
+
+class Contact(models.Model):
+
+	def get_absolute_url(self):
+
+		return reverse("contacts-view", kwargs={'pk':self.id})
