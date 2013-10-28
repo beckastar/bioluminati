@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 
 from contacts.models import Contact 
 
+from django.forms.models import inlineformset_factory
+
 #creating new model form 
 class ContactForm(forms.ModelForm):
 #allows you to get confirmation of email address
@@ -33,3 +35,11 @@ class ContactForm(forms.ModelForm):
 				"Email addresses must match."
 			)
 		return self.cleaned_data
+# inlineformset_factory creates a Class from a parent model (Contact)
+# to a child model (Address)
+
+#factory functions to create class for you
+ContactAddressFormSet = inlineformset_factory(
+    Contact,
+    Address,
+)

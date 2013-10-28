@@ -23,6 +23,8 @@ urlpatterns = patterns('',
         name='contacts-delete',),
 	url(r'^(?P<pk>\d+)/$', contacts.views.ContactView.as_view(),
 		name='contacts-view',),
+	url(r'^edit/(?P<pk>\d+)/addresses$', contacts.views.EditContactAddressView.as_view(),
+        name='contacts-edit-addresses',),
 	
     # Examples:
     # url(r'^$', 'addressbook.views.home', name='home'),

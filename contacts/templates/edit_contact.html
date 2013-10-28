@@ -1,6 +1,4 @@
-{%% extends "base.html"}
-
-{% if contact.id %}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -32,7 +30,7 @@
 </form>
 
 {% if contact.id %}
-<a href= "{% url "contacts-edit-addresses" pk= contact.id %}">
+<a href= "{% url "contacts-edit-addresses" pk=contact.id %}">
  Edit Addresses
  </a>
 <a href="{% url "contacts-delete" pk=contact.id %}">Delete</a>
