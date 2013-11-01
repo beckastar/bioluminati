@@ -1,4 +1,4 @@
-# Django settings for addressbook project.
+# Django settings for bioluminati project.
 import os.path
 
 DEBUG = True
@@ -107,10 +107,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'addressbook.urls'
+ROOT_URLCONF = 'proj.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'addressbook.wsgi.application'
+WSGI_APPLICATION = 'proj.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
