@@ -130,10 +130,15 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'biocore',
-    'south'
+    'south',
+    'crispy_forms'
 )
 
 AUTH_USER_MODEL = 'biocore.User'
+LOGIN_URL = '/login/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+CRISPY_FAIL_SILENTLY = not DEBUG
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
