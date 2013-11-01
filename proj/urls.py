@@ -13,7 +13,9 @@ from biocore import views
 urlpatterns = patterns('',
     url(r'^$', views.homepage, name='homepage'),
     url(r'^login/$', views.login, name='login'),
+    url(r'^logout/$', views.logout, name='logout'),
     url(r'^register/$', views.register, name='register'),
+
     #url(r'^$', views.ListContactView.as_view(),
     #    name = 'contacts-list',),
 	#url function lets  you use named parameters to make everything more clear. 

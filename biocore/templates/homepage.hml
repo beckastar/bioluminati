@@ -1,1 +1,5 @@
-homepage
+{% extends "base.html" %}
+
+{% block content %}
+homepage x{{ user.username }}
+{% endblock content %}

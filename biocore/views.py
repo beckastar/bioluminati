@@ -1,46 +1,75 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.http import HttpResponse
-from django.views.generic import View
-#for listing contacts
-from django.views.generic import ListView
-#from biocore.models import Contact
-#adding info to database
+
+from django.contrib import auth
+from django.contrib.auth.forms import AuthenticationForm
+
 from django.core.urlresolvers import reverse
-from django.views.generic import CreateView
-#testing
-from django.test.client import Client 
-from django.test.client import RequestFactory
-from django.test import LiveServerTestCase
-#from selenium.webdriver.firefox.webdriver import WebDriver  
-#missing from tutorial; this broke the whole thing
-from unittest import TestCase
-from django.views.generic import UpdateView
-#for deleting contacts
-from django.views.generic import DeleteView
-from django.views.generic import DetailView
-from django.db import models 
-import forms 
+
+from biocore import forms 
+
+def _redirect_if_logged_in(f):
+	from functools import wraps
+	wraps(f)
+	def _f(request, *args, **kwargs):
+		next = request.GET.get("next", reverse('homepage'))
+		if request.user.is_authenticated():
+			return redirect(next)
+		return f(request, *args, **kwargs)
+	return _f
+
 
 def homepage(request):
 	return render(request, 'homepage.html')
 
-
+@_redirect_if_logged_in
 def login(request):
-	return render(request, 'login.html')
+	login_form = AuthenticationForm()
+	if request.method == 'POST':
+		login_form = AuthenticationForm(request, request.POST)
 
+		if login_form.is_valid():
+			user = login_form.get_user()
+
+			if user is not None:
+				auth.login(request, user)
+
+			next = request.GET.get("next", reverse('homepage'))
+			return redirect(next)
+
+	request.session.set_test_cookie()
+	return render(request, 'login.html', {
+		'login_form': login_form
+	})
+
+def logout(request):
+	next = request.GET.get("next", reverse('homepage'))
+	auth.logout(request)
+	return redirect(next)
+
+@_redirect_if_logged_in
 def register(request):
-	return render(request, 'register.html')
+	registration_form = forms.UserCreationForm()
+	if request.method == 'POST':
+		registration_form = forms.UserCreationForm(request.POST)
 
-#general view 
-def hello_world(request):
-	return HttpResponse("Hello, World")
+		if registration_form.is_valid():
+			user = registration_form.save()
+			user.backend = 'django.contrib.auth.backends.ModelBackend'
+			auth.login(request, user)
+			return redirect(reverse('homepage'))
 
-#class based view 
-class MyView(View):
+	return render(request, 'register.html', {
+		'registration_form': registration_form
+	})
 
-	def get(self, request, *args, **kwargs):
-		return HttpResponse("Hello, World")
+
+# #class based view 
+# class MyView(View):
+
+# 	def get(self, request, *args, **kwargs):
+# 		return HttpResponse("Hello, World")
 
 # #for listing contacts
 # class ListContactView(ListView):

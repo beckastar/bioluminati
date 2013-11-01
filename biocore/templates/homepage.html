@@ -1,1 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
 homepage
+{% if user.is_anonymous %}
+  <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a>
+{% else %}
+  {{ user.username }} <a href="{% url 'logout' %}">logout</a>
+{% endif %}
+{% endblock content %}
