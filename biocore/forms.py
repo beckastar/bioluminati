@@ -12,22 +12,25 @@ class UserCreationForm(forms.ModelForm):
         'duplicate_username': _("A user with that username already exists."),
         'password_mismatch': _("The two password fields didn't match."),
     }
-    username = forms.RegexField(label=_("Username"), max_length=30,
+    username   = forms.RegexField(label=_("Username"), max_length=30,
         regex=r'^[\w.@+-]+$',
         help_text=_("Required. 30 characters or fewer. Letters, digits and "
                       "@/./+/-/_ only."),
         error_messages={
             'invalid': _("This value may contain only letters, numbers and "
                          "@/./+/-/_ characters.")})
-    password1 = forms.CharField(label=_("Password"),
+    email      = forms.EmailField(label=_("E-mail"))
+    first_name = forms.CharField(label=_("First name"))
+    last_name = forms.CharField(label=_("Last name"))
+    password1  = forms.CharField(label=_("Password"),
         widget=forms.PasswordInput)
-    password2 = forms.CharField(label=_("Password confirmation"),
+    password2  = forms.CharField(label=_("Password confirmation"),
         widget=forms.PasswordInput,
         help_text=_("Enter the same password as above, for verification."))
 
     class Meta:
         model = User
-        fields = ("username",)
+        fields = ("username", "email", "first_name", "last_name")
 
     def clean_username(self):
         # Since User.username is unique, this check is redundant,
