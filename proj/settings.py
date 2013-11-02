@@ -87,7 +87,9 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
+# Make this unique, and don't share it with anybody
+# FIXME: ultimately, this: open('secret.txt').read() with key, and gitignore
+
 SECRET_KEY = '(-%8d%8#)@*c1hp3)megfnd0@@yy0g4*4srp+1g%@yt(_)a0ta'
 
 # List of callables that know how to import templates from various sources.
@@ -175,4 +177,5 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    # 'biocore.middleware.ForceEssentialAnswersMiddleware'
 )

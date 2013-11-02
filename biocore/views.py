@@ -20,13 +20,33 @@ def _redirect_if_logged_in(f):
 	return _f
 
 
+# example longform equivalent of shortcuts.render:
+# from django.template.loader import get_template
+# from django.template.context import RequestContext
+# from django.http import HttpResponse
+#
+# partial_context = { 'data': 'from view' }
+# context = RequestContext(request, partial_context)
+# template = get_template('homepage.html')
+# result = template.render(context)
+# response = HttpResponse(result)
+# return response
+# -or- w/ shortcuts.render:
+# 
+# return render(request, 'homepage.html', partial_context)
+
 def homepage(request):
 	return render(request, 'homepage.html')
+
+def profile(request, user_id):
+	return HttpResponse("TBD")
 
 @_redirect_if_logged_in
 def login(request):
 	login_form = AuthenticationForm()
 	if request.method == 'POST':
+		# django takes form names and filling in field names as keys in the .POST MultiValueDict
+		# something like: request.POST = {'username': 'foo'}
 		login_form = AuthenticationForm(request, request.POST)
 
 		if login_form.is_valid():
@@ -35,8 +55,8 @@ def login(request):
 			if user is not None:
 				auth.login(request, user)
 
-			next = request.GET.get("next", reverse('homepage'))
-			return redirect(next)
+				next = request.GET.get("next", reverse('homepage'))
+				return redirect(next)
 
 	request.session.set_test_cookie()
 	return render(request, 'login.html', {

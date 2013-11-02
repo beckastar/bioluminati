@@ -15,6 +15,10 @@ urlpatterns = patterns('',
     url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^register/$', views.register, name='register'),
+    # example regex-based urlconf, e.g. 
+    # /profiles/2/ -> views.profile(user_id=2)
+    url(r'^profiles/(?P<user_id>\d+)/$', views.profile, name='profile'),
+
 
     #url(r'^$', views.ListContactView.as_view(),
     #    name = 'contacts-list',),
