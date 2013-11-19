@@ -7,7 +7,26 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from django.core.urlresolvers import reverse
 
-from biocore import forms 
+from biocore import forms  
+
+from django.views.generic import ListView
+
+from models import User
+from datetime import datetime
+import datetime
+
+def hello(request):
+	return HttpResponse("Hello world")
+
+def current_datetime(request):
+	next_burn = datetime.datetime(2014, 8, 30)
+	now = datetime.datetime.now()
+	days_until_burn = (next_burn - now).days
+	html = "<html><body>The Man burns in %s days.</body></html>" %days_until_burn
+	return HttpResponse(html)
+
+class ListUserView(ListView):
+	model = User
 
 def _redirect_if_logged_in(f):
 	from functools import wraps
@@ -62,6 +81,7 @@ def login(request):
 	return render(request, 'login.html', {
 		'login_form': login_form
 	})
+	#if the 
 
 def logout(request):
 	next = request.GET.get("next", reverse('homepage'))
@@ -83,6 +103,7 @@ def register(request):
 	return render(request, 'register.html', {
 		'registration_form': registration_form
 	})
+
 
 
 # #class based view 
