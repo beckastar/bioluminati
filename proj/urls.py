@@ -5,9 +5,11 @@ from django.conf.urls import patterns, include, url
 #includes staticfiles
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from biocore import views
+from biocore.views import hello, current_datetime, daystoburn, hours_ahead
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
-# admin.autodiscover()
+# admin.autodiscover() 
+
 
 
 urlpatterns = patterns('',
@@ -18,7 +20,13 @@ urlpatterns = patterns('',
     # example regex-based urlconf, e.g. 
     # /profiles/2/ -> views.profile(user_id=2)
     url(r'^profiles/(?P<user_id>\d+)/$', views.profile, name='profile'),
-
+    #2 lines of tutorial below
+    url(r'^hello/$', hello),
+    url(r'^time/$', current_datetime),
+    #below line needs front end
+    url(r'^days/$', daystoburn),
+    #tutorial below
+    url(r'^time/plus/(\d{1,2})/$', hours_ahead),
 
     #url(r'^$', views.ListContactView.as_view(),
     #    name = 'contacts-list',),
