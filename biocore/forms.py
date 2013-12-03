@@ -1,7 +1,7 @@
 # copied from django.contrib.auth.forms.UserCreationForm, but changed to use our custom User.
 from django import forms
 from django.utils.translation import ugettext as _
-from biocore.models import User
+from biocore.models import User, Travel
 
 class UserCreationForm(forms.ModelForm):
     """
@@ -61,6 +61,84 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class TravelFrom(forms.Form):
+    from_city = forms.ChoiceField(required=True,
+                                    choices=Travel.CITY_CHOICES)
+    other_place = forms.CharField(label = _("You're not from around here, are ya?  Where are you traveling from?"))
+
+    helping_with_setup = forms.BooleanField(label ="Check here if you'll be helping us with setup (requires early arrival ticket).",
+                                            required = True,
+                                            initial = False)
+    helping_with_exedus = forms.BooleanField(label = "Check here if you will be helping with exedus.",
+                                                required =True,
+                                                initial = False)
+    arrival_date = forms.ChoiceField(required=True,
+                                        choices=User.DATES_2014)
+    first_meal = forms.ChoiceField(required = True, choices = User.DAILY_MEALS)
+    departure_date = forms.ChoiceField(required=True,
+                                        choices=User.DATES_2014)
+    is_primary_driver = forms.BooleanField(label = "If you're parking on site: pick a primary driver/owner or renter of the vehicle.  Is it you? Yes? Then check here.", 
+                                            required = True, 
+                                            initial = False)
+    has_car_on_site = forms.BooleanField(label ="Check here if you're driving or arriving in a vehicle to be parked in camp.")
+
+    type_of_car = forms.ChoiceField(required=True, 
+                                    choices = Travel.CAR_TYPES)
+    make_of_vehicle = forms.CharField(label = _("What make if your car?"))
+
+    width_of_vehicle = forms.CharField(label = _("How many feet wide is it?"))
+    length_of_vehicle = forms.CharField(label = _("How long?"))
+    car_color = forms.CharField(label = _("What color?"))
+    lookingforride = forms.BooleanField(label= "Check here if you're looking for a ride either way.",
+                                        required = False,
+                                        initial = False)
+    has_room_for_passenger_to_burn = forms.BooleanField(label = "Check here if you have room for another person on the way to the Playa.",
+                                                required = False,
+                                                initial = False)
+    has_room_for_passenger_home = forms.BooleanField(label = "Check here if you have room for another person on the way home.",
+                                                required = False,
+                                                initial = False)
+    needs_sherpa = forms.BooleanField(label = "Check here if you've got (a small amount of) cargo to send with others",
+                                    required = False,
+                                    initial = False)
+    has_space = forms.BooleanField(label = "Check here if you can carry a bit of cargo for someone else",
+                                    required = False,
+                                    initial = False)    
+
+    def clean_city(self):
+        city = self.cleaned_data["from_city"]
+        other = self.cleaned_data["other_place"]
+        if city == "Other":
+            raise ValidationError("Pleaes type in your city below")
+            city = self.cleaned_data.get(other)
+        else:
+            city = self.cleaned_data.get(city)
+        return self.cleaned_data  
+    def clean_arrival(self):
+        arrival = self.cleaned_data.get("arrival_date")
+    def clean_first_meal(self):
+        firstmeal = self.cleaned_data.get("first_meal")
+    def clean_departure_date(self):
+        departure = self.cleaned_data.get("departure_date")
+    def can_take_passenger(self):
+        has_space = self.cleaned_data.get("has_room_for_passenger")
+    def looking_for_ride(self):
+        seeks_ride = self.cleaned_data.get("lookingforride")
+    def need_sherpa(self):
+        need_sherpa = self.cleaned_data.get("has_space")
+
+
+
+
+
+
+
+    
+
+
+
+
 
 # #this file allows you to add fields to form
 # from django import forms
