@@ -1,0 +1,46 @@
+
+
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+ 
+
+{% block content %}
+<link href="/static/bootstrap/css/stylesheet.css" rel="stylesheet"> 
+<!-- <script language='javascript' type="text/javascript" src = "/bioluminati/media/meals.js"></script> -->
+<form action ="/meals/" method = "post">
+	{{ meals | crispy }}
+	  {% csrf_token %}
+         
+<h2> Choose your meal shifts </h2>
+
+
+
+
+<h3> 
+<div></div>
+{% for key, value in date_choices %}
+{{ value }} <br>
+<br>
+{% endfor %}
+</h3> 
+  <a href="/"> Back to Home </a>     
+  <body>
+  <table border = "0", width="70%">
+  <tr> 
+ </tr> 
+  </table>
+
+
+
+ 
+</body>
+{% endblock %}
+
+Result:
+<div id="r"></div>
+
+	<!-- 
+	  <input type="submit" name="submit" value="Submit" class="submit submitButton" id="submit-id-submit" /> -->
+	</form>  
