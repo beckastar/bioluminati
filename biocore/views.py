@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 
 from django.http import HttpResponse
 
 from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth.forms import AuthenticationForm
 
 from django.core.urlresolvers import reverse
@@ -14,16 +16,45 @@ from django.views.generic import ListView
 from models import User
 from datetime import datetime
 import datetime
+from django.template.loader import get_template
+from django.template import Context, loader, RequestContext
+
 
 def hello(request):
 	return HttpResponse("Hello world")
 
 def current_datetime(request):
+    now = datetime.datetime.now()
+    html = "<html><body>It is now %s.</body></html>" % now
+    return HttpResponse(html)
+#
+#def hours_ahead(request, offset):
+#	try:
+#		offset = int(offset)
+#	except ValueError:
+#		raise Http404()
+#	dt = datetime.datetime.now() + datetime.timedelta(hours=offset)
+#	html = "<html><body>In %s hour(s), it will be %s.</body></html>" % (offset, dt)
+#	return HttpResponse(html)
+
+def hours_ahead(request, offset):
+	try:
+		offset = int(offset)
+	except ValueError:
+		raise Http404()
+	dt = datetime.datetime.now() + datetime.timedelta(hours=offset)
+	# t = get_template('hours_ahead.html')
+	#html = t.render(Context({'future': dt}))
+	return render(request, 'hour_ahead.html', {'hour_offset': offset,'future':dt})
+
+def daystoburn(request):
 	next_burn = datetime.datetime(2014, 8, 30)
 	now = datetime.datetime.now()
 	days_until_burn = (next_burn - now).days
-	html = "<html><body>The Man burns in %s days.</body></html>" %days_until_burn
-	return HttpResponse(html)
+	#html = "<html><body>The Man burns in %s days.</body></html>" %days_until_burn
+	#t = get_template('daysuntilburn.html')
+	#html = t.render(Context({'daystoburn': days_until_burn}))
+	return render(request, 'daysuntilburn.html', {'daystoburn': days_until_burn})
 
 class ListUserView(ListView):
 	model = User
@@ -104,6 +135,45 @@ def register(request):
 		'registration_form': registration_form
 	})
 
+@login_required
+def travel(request):
+	travel_from = forms.TravelFrom()
+	if request.method == "POST":
+		travel_from = forms.TravelFrom(request.POST)
+
+	return render(request, 'travel.html', {
+		'travel_from': travel_from
+	})
+
+# date_choices = User.DATES_2014
+
+
+# def meals(request):
+# 	date_choices = User.DATES_2014 
+# 	meals1 = forms.Meals()
+	#display all dates
+	# if request.method == "POST":
+	# 	meals = forms.Meals(request.POST)
+	if request.method == "GET":
+	#just render the form
+	# get form from forms
+	# form = forms.Meals().getForm()
+	#below listed dates successfully.
+		return render_to_response('meals.html', {'date_choices': date_choices})
+	#else:
+	#old method below. 
+	if request.method == "POST":
+		form = Meals(request.POST)
+		if form.is_valid():
+			shifts = form.cleaned_data['shifts']
+			meals = form.cleaned_data['meals']
+			dates = form.cleaned_data['']
+
+
+			model_instance.save()
+			return redirect('your data has been saved')
+	return render(request 'meals.html', {'form': form,
+		})
 
 
 # #class based view 
