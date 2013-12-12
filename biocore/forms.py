@@ -2,6 +2,8 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from biocore.models import User, Travel
+from django.utils import timezone
+import datetime
 
 class UserCreationForm(forms.ModelForm):
     """
@@ -75,7 +77,7 @@ class TravelFrom(forms.Form):
                                                 initial = False)
     arrival_date = forms.ChoiceField(required=True,
                                         choices=User.DATES_2014)
-    first_meal = forms.ChoiceField(required = True, choices = User.DAILY_MEALS)
+    #first_meal = forms.ChoiceField(required = True, choices = User_Meals.DAILY_MEALS)
     departure_date = forms.ChoiceField(required=True,
                                         choices=User.DATES_2014)
     is_primary_driver = forms.BooleanField(label = "If you're parking on site: pick a primary driver/owner or renter of the vehicle.  Is it you? Yes? Then check here.", 
@@ -129,13 +131,63 @@ class TravelFrom(forms.Form):
         need_sherpa = self.cleaned_data.get("has_space")
 
 
+class Meals(forms.Form):
+
+   
+    FIRST_OF_2014 = datetime.datetime(2014, 8, 20)
+    setup1 = FIRST_OF_2014
+    setup2 = FIRST_OF_2014 + datetime.timedelta(days=1)
+    setup3 = FIRST_OF_2014 + datetime.timedelta(days=2)
+    setup4 = FIRST_OF_2014 + datetime.timedelta(days=3)
+    setup5 = FIRST_OF_2014 + datetime.timedelta(days=4)
+    day1   = FIRST_OF_2014 + datetime.timedelta(days=5)
+    day2   = FIRST_OF_2014 + datetime.timedelta(days=6)
+    day3   = FIRST_OF_2014 + datetime.timedelta(days=7)
+    day4   = FIRST_OF_2014 + datetime.timedelta(days=8)
+    day5   = FIRST_OF_2014 + datetime.timedelta(days=9)
+    day6   = FIRST_OF_2014 + datetime.timedelta(days=10)
+    day7   = FIRST_OF_2014 + datetime.timedelta(days=11)
+    day8   = FIRST_OF_2014 + datetime.timedelta(days=12)
+    day9   = FIRST_OF_2014 + datetime.timedelta(days=13)
 
 
+    date_choices = {setup1:FIRST_OF_2014,
+    setup2:(FIRST_OF_2014 + datetime.timedelta(days=1)),
+    setup3: (FIRST_OF_2014 + datetime.timedelta(days=2)),
+    setup4: (FIRST_OF_2014 + datetime.timedelta(days=3)),
+    setup5:(FIRST_OF_2014 + datetime.timedelta(days=4)),
+    day1: (FIRST_OF_2014 + datetime.timedelta(days=5)),
+    day2: (FIRST_OF_2014 + datetime.timedelta(days=6)),
+    day3: (FIRST_OF_2014 + datetime.timedelta(days=7)),
+    day4: (FIRST_OF_2014 + datetime.timedelta(days=8)),
+    day5: (FIRST_OF_2014 + datetime.timedelta(days=9)),
+    day6: (FIRST_OF_2014 + datetime.timedelta(days=10)),
+    day7: (FIRST_OF_2014 + datetime.timedelta(days=11)),
+    day8: (FIRST_OF_2014 + datetime.timedelta(days=12)),
+    day9: (FIRST_OF_2014 + datetime.timedelta(days=13))}
+     
+    FIRST_OF_2014 = datetime.datetime(2014, 8, 20)
+#    meals = []
+#    meals.append()
 
+    meals = forms.CharField(required=True, choices = User_Meals.DAILY_MEALS)
+    shifts = forms.CharField(required=True, choices = User_Meals.SHIFTS)
+    name = forms.CharField()
+    # def clean_shifts(self):
+    #     shifts = self.cleaned_data.get(choices = shifts)
+    # def clean_meals(self):
+    #     meals= self.cleaned_data.get(choices = meals)
+    # def clean_name(self):
+    #     name = self.cleaned_data.get(choices = name)
+#below: melita's suggestion
+    # def getForm(self):
+    #     meal_shifts = [] 
 
-
-    
-
+    #     for i in range(26):
+    #         meal_shifts = {
+    #          'chef' : User_Meals.chef,
+    #                 'sous_chef': User_Meals.sous_chef,
+    #                 'kp': User_Meals.kp1}    
 
 
 
