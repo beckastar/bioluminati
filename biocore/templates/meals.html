@@ -7,31 +7,93 @@
  
 
 {% block content %}
-<link href="/static/bootstrap/css/stylesheet.css" rel="stylesheet"> 
-<!-- <script language='javascript' type="text/javascript" src = "/bioluminati/media/meals.js"></script> -->
+<body>
+<link href="/static/bootstrap/css/meals.css" rel="stylesheet">  
 <form action ="/meals/" method = "post">
-	{{ meals | crispy }}
+	{{ meals | crispy }}`
 	  {% csrf_token %}
          
-<h2> Choose your meal shifts </h2>
 
 
+   <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Dropdown test</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Action</a></li>
+                  <li><a href="#">Another action</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>   
+<h2><div align="left"> Choose your meal shifts</div></h2>
+
+<div class="modal fade"></div>
+
+<table border = "0", width="70%">
+  <tr>
+    <th><h2>Date</h2></th>
+    <th><h2>Meal</h2></th>
+  </tr>
+  {% for key, value in date_choices %}
+  <tr>
+    <td colspan=1><h3><div align ="center">{{ value }}</div></h3></td>
+  </tr> 
+  {% for meal in meal_shifts %}
+
+  <tr>
+  	{% if meal.meals == breakfast %}
+      <h3>Breakfast</h3>
+      <ul> 
+        <li>Chef:<input type="text" name="firstname"></li>
+        <li>Sous-chef:<input type="text" name="firstname"></li>
+        <li>KP:<input type="text" name="firstname"></li>
+      </ul>
+    </td>
+    <td>
+    {% if meal.meals == dinner %}
+      <h3>Dinner</h3>
+      <ul>
+        <li>Chef:<input type="checkbox" name="firstname"></li>
+        <li>Sous-chef:<input type="checkbox" value = "Sous Chef"></li>
+        <li>KP:<input type="text" name="firstname"></li>
+      </ul>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<div id="grey-1" class="grey">1</div>
+<div id="grey-2" class="grey">2</div>
+<div id="grey-3" class="grey">3</div>
+<div id="grey-4" class="grey">4</div>
+<div id="grey-5" class="grey">5</div>
+<div id="grey-6" class="grey">6</div>
+<div id="grey-7" class="grey">7</div>
+<div id="grey-8" class="grey">8</div>
+<div id="grey-9" class="grey">9</div>
+<br style="clear:both;" />
+
+<div id="color-b" class="color">b</div>
+<div id="color-p" class="color">p</div>
+<div id="color-y" class="color">y</div>
+<div id="color-r" class="color">r</div>
+<div id="color-g" class="color">g</div>
+<br style="clear:both;" />
+
+<a href="/"> Back to Home </a>     
+</form>
 
 
-<h3> 
-<div></div>
-{% for key, value in date_choices %}
-{{ value }} <br>
-<br>
-{% endfor %}
-</h3> 
-  <a href="/"> Back to Home </a>     
-  <body>
-  <table border = "0", width="70%">
-  <tr> 
- </tr> 
-  </table>
-
+</body>
+ 
 
 
  
