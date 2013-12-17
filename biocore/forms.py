@@ -1,7 +1,7 @@
 # copied from django.contrib.auth.forms.UserCreationForm, but changed to use our custom User.
 from django import forms
 from django.utils.translation import ugettext as _
-from biocore.models import User, Travel
+from biocore.models import User, Travel, Meal, MealSignup
 from django.utils import timezone
 import datetime
 
@@ -65,6 +65,11 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 class TravelFrom(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(TravelFrom, self).__init__(*args, **kwargs)
+        self.fields['extra_thing'] = forms.BooleanField(label ="dynamic field", required = True,
+                                            initial = False)
+
     from_city = forms.ChoiceField(required=True,
                                     choices=Travel.CITY_CHOICES)
     other_place = forms.CharField(label = _("You're not from around here, are ya?  Where are you traveling from?"))
@@ -131,6 +136,54 @@ class TravelFrom(forms.Form):
         need_sherpa = self.cleaned_data.get("has_space")
 
 
+class MealSignups(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(MealSignups, self).__init__(*args, **kwargs)
+
+        meals = Meal.objects.order_by('start_time')
+        # FIXME: handle boolean courier
+        positions = ['kp', 'sous']
+
+        for meal in meals:
+            for position in positions:
+                field_name = self.field_name_for(meal, position)
+                label = "%s: %s" % (meal.start_time.strftime("%d %m"), position)
+                self.fields[field_name] = forms.BooleanField(label=label, required=False)
+
+    def save(self, user, previous_signups):
+        for field in self.fields:
+            meal_id, position = self.meal_and_position_from(field)
+            if self.cleaned_data[field]:
+                MealSignup.objects.create(meal_id=meal_id, position=position, user=user)
+            else:
+                previous_signups.filter(meal_id=meal_id, position=position).delete()
+
+
+
+
+    @staticmethod
+    def field_name_for(meal, position):
+        return "meal_%s_%s" % (meal.id, position)
+
+    @staticmethod
+    def meal_and_position_from(field_name):
+        return field_name.split("_")[1:]
+
+
+
+# if we didn't need dynamic meal days, something like that:
+# class MealSignups(forms.Form):
+#     kp_aug_20_am = forms.BooleanField(required=False)
+#     sous_aug_20_am = forms.BooleanField(required=False)
+#     chef_aug_20_am = forms.BooleanField(required=False)
+#     courier_aug_20_am = forms.BooleanField(required=False)
+
+#     kp_aug_20_pm = forms.BooleanField(required=False)
+#     sous_aug_20_pm = forms.BooleanField(required=False)
+#     chef_aug_20_pm = forms.BooleanField(required=False)
+#     courier_aug_20_pm = forms.BooleanField(required=False)
+    
+
 class Meals(forms.Form):
 
    
@@ -170,8 +223,8 @@ class Meals(forms.Form):
 #    meals = []
 #    meals.append()
 
-    meals = forms.CharField(required=True, choices = User_Meals.DAILY_MEALS)
-    shifts = forms.CharField(required=True, choices = User_Meals.SHIFTS)
+    #meals = forms.CharField(required=True, choices = User_Meals.DAILY_MEALS)
+    #shifts = forms.CharField(required=True, choices = User_Meals.SHIFTS)
     name = forms.CharField()
     # def clean_shifts(self):
     #     shifts = self.cleaned_data.get(choices = shifts)
