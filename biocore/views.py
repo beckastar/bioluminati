@@ -10,6 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 
 from biocore import forms  
+from biocore.models import MealSignup
 
 from django.views.generic import ListView
 
@@ -148,32 +149,56 @@ def travel(request):
 # date_choices = User.DATES_2014
 
 
+
+@login_required
+def meal_signup(request):
+	existing_signups = MealSignup.objects.filter(user=request.user)
+	initial = {}
+	for signup in existing_signups:
+		field_name = forms.MealSignups.field_name_for(signup.meal, signup.position)
+		initial[field_name] = True
+
+	# initial should include previous signups.
+	#initial = User_Meals.objects.filter(user=request.user)
+	# e.g. initial = {'sous_aug_20_am': True}
+	#  to match the form field
+
+	form = forms.MealSignups(initial=initial)
+	if request.method == 'POST':
+		form = forms.MealSignups(request.POST, initial=initial)
+		if form.is_valid():
+			form.save(request.user, existing_signups)
+
+
+	return render(request, 'meal_signup.html', {'form': form})
+
+
 # def meals(request):
 # 	date_choices = User.DATES_2014 
 # 	meals1 = forms.Meals()
 	#display all dates
 	# if request.method == "POST":
 	# 	meals = forms.Meals(request.POST)
-	if request.method == "GET":
-	#just render the form
-	# get form from forms
-	# form = forms.Meals().getForm()
-	#below listed dates successfully.
-		return render_to_response('meals.html', {'date_choices': date_choices})
-	#else:
-	#old method below. 
-	if request.method == "POST":
-		form = Meals(request.POST)
-		if form.is_valid():
-			shifts = form.cleaned_data['shifts']
-			meals = form.cleaned_data['meals']
-			dates = form.cleaned_data['']
+	# if request.method == "GET":
+	# #just render the form
+	# # get form from forms
+	# # form = forms.Meals().getForm()
+	# #below listed dates successfully.
+	# 	return render_to_response('meals.html', {'date_choices': date_choices})
+	# #else:
+	# #old method below. 
+	# if request.method == "POST":
+	# 	form = Meals(request.POST)
+	# 	if form.is_valid():
+	# 		shifts = form.cleaned_data['shifts']
+	# 		meals = form.cleaned_data['meals']
+	# 		dates = form.cleaned_data['']
 
 
-			model_instance.save()
-			return redirect('your data has been saved')
-	return render(request 'meals.html', {'form': form,
-		})
+	# 		model_instance.save()
+	# 		return redirect('your data has been saved')
+	# return render(request 'meals.html', {'form': form,
+	# 	})
 
 
 # #class based view 
