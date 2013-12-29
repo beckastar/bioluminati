@@ -2,6 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from biocore.models import User, Travel, Meal, MealSignup
+from biocore.fields import UneditableText
 from django.utils import timezone
 import datetime
 
@@ -136,31 +137,55 @@ class TravelFrom(forms.Form):
         need_sherpa = self.cleaned_data.get("has_space")
 
 
+
+
 class MealSignups(forms.Form):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super(MealSignups, self).__init__(*args, **kwargs)
 
         meals = Meal.objects.order_by('start_time')
         # FIXME: handle boolean courier
-        positions = ['kp', 'sous']
-
+        positions = ['kps', 'sous']
         for meal in meals:
             for position in positions:
+                previous_signups = MealSignup.objects.filter(meal_id = meal.id, position=position).exclude(user=user)
+                num_previous_signups = previous_signups.count()
+
+                signups_requested = getattr(meal, "%s_needed" % position)
+
+                #below calls staticmethod field_name_for and assigns to variable. 
                 field_name = self.field_name_for(meal, position)
-                label = "%s: %s" % (meal.start_time.strftime("%d %m"), position)
-                self.fields[field_name] = forms.BooleanField(label=label, required=False)
+                #
+                am_label = 'am' if meal.is_am else 'pm'
+                label = "%s %s: %s" % (meal.start_time.strftime("%a %B %d"), am_label, position)
+
+
+                if num_previous_signups < signups_requested:
+                    #self.fields[field_name]
+                    self.fields[field_name] = forms.BooleanField(label=label, required=False)
+                else:
+                    signed_up_names = "xxxxx".join([signup.user.username for signup in previous_signups])
+                    # all signups taken, show the others (to trade with offline)
+                    self.fields[field_name] = forms.CharField(label=label, widget=UneditableText(attrs={'text':signed_up_names}))
+
+            if meal.chef is None:
+                # show the chef signup.
+                pass
 
     def save(self, user, previous_signups):
         for field in self.fields:
             meal_id, position = self.meal_and_position_from(field)
-            if self.cleaned_data[field]:
+            if self.cleaned_data[field]: 
+                # the user picked this signup.
+                if position == 'chef': # also mark them chef for the meal
+                    Meal.objects.filter(id=meal_id).update(chef = user)
                 MealSignup.objects.create(meal_id=meal_id, position=position, user=user)
             else:
                 previous_signups.filter(meal_id=meal_id, position=position).delete()
 
 
 
-
+    #iterates 
     @staticmethod
     def field_name_for(meal, position):
         return "meal_%s_%s" % (meal.id, position)
