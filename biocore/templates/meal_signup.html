@@ -1,0 +1,18 @@
+
+
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+ 
+
+{% block content %}
+<link href="/static/bootstrap/css/meals.css" rel="stylesheet">  
+<form action ="/meal_signup/" method = "post">
+	{{ form | crispy }}`
+
+	  {% csrf_token %}
+	}
+	<input type="submit"></input>
+         
+</form>
+{% endblock %}
