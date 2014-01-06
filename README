@@ -1,9 +1,15 @@
 This is a django 1.5 implementation of a Burning Man site, developed for Bioluminati, a 50ish person camp of over 15 years.
 
-Bioluminati has organized group meals and runs Pimp Your Bike, a bike decorating facility.
+This is intended to be an upgrade from the current site, which can be viewed at www.bioluminati.org. 
 
-This site offers the following features:
+Goals of this project:
 
- * List stuff here
- * So that other burners might decide to use it
+1. Allow for greater ease of meal signups [DONE]
+2. Make it possible to easily view who has signed up for which shift [DONE}
+2. Allow for chef to dictate how many kp's and sous chefs are needed for a meal [DONE]
+3. Improved display of meal restrictions on a single page printable summary
+4. Consolidate pages and elminate out of date information on site 
+5. Dynamically generated random displays of camp photos 
+6. Flesh out user profile and travel info
+
 
