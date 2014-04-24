@@ -104,15 +104,17 @@ class User(AbstractUser):
 		(dinner, "dinner"),
 		)
 	camping_in_2014 = models.BooleanField(default=True)
-	arrival_date = models.CharField(max_length = 30, choices =DATES_2014, default=setup1)
-	first_meal_in_camp = models.CharField(max_length=20, choices=DAILY_MEALS, default=dinner)
-	departure_date = models.CharField(max_length = 30, choices =DATES_2014, default = day8)
+	arrival_date = models.DateTimeField(max_length = 30, choices =DATES_2014, null=True)
+	first_meal_in_camp = models.CharField(max_length=20, choices=DAILY_MEALS, null=True)
+	departure_date = models.DateTimeField(max_length = 30, choices =DATES_2014, null=True)
 	available_for_setup = models.BooleanField(default=True)
 	helping_with_setup = models.BooleanField(default = False)
 	available_for_exedous = models.BooleanField(default=True)
 	helping_with_exedous = models.BooleanField(default = True)
 	#only admin can change field below
 	dues_paid = models.BooleanField (default = False)
+	def has_answered_essentials(self):
+		return self.arrival_date and self.first_meal_in_camp and self.departure_date 
 
 class Restrictions(models.Model):
 	vegan="vegan"
@@ -190,6 +192,9 @@ class Meal(models.Model):
 	courier_needed = models.BooleanField()
 	description = models.CharField(max_length=400)
 	courier_description = models.CharField(max_length=400, blank=True)
+
+	def __unicode__(self):
+		return "%s %s" % (self.is_am, self.start_time)
 
 MEAL_POSITIONS = (
 	("chef", "chef"),

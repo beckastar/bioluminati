@@ -4,8 +4,10 @@
 
 {% load crispy_forms_tags %}
  
-
 {% block content %}
+{% block title %}Meal Signups{% endblock %}
+
+
 <link href="/static/bootstrap/css/meals.css" rel="stylesheet">  
 <form action ="/meal_signup/" method = "post">
 	{{ form | crispy }}`

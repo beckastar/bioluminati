@@ -6,6 +6,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from biocore import views
 from biocore.views import hello, current_datetime, daystoburn, hours_ahead
+from django.contrib import admin
+admin.autodiscover()
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover() 
@@ -27,6 +29,10 @@ urlpatterns = patterns('',
     url(r'^days/$', daystoburn),
     #tutorial below
     url(r'^time/plus/(\d{1,2})/$', hours_ahead),
+    (r'^travel/$', views.travel),
+    url(r'^meal_signup/$', views.meal_signup, name='meal_signup'),
+    url(r'^chef_cockpit/(?P<meal_id>\d+)/$', views.chef_cockpit, name='chef_cockpit'),
+    (r'^admin/', include(admin.site.urls)),
 
     #url(r'^$', views.ListContactView.as_view(),
     #    name = 'contacts-list',),

@@ -149,6 +149,10 @@ def travel(request):
 # date_choices = User.DATES_2014
 
 
+@login_required
+def chef_cockpit(request, meal_id):
+	return HttpResponse("cockpit")
+
 
 @login_required
 def meal_signup(request):
@@ -163,9 +167,9 @@ def meal_signup(request):
 	# e.g. initial = {'sous_aug_20_am': True}
 	#  to match the form field
 
-	form = forms.MealSignups(initial=initial)
+	form = forms.MealSignups(request.user, initial=initial)
 	if request.method == 'POST':
-		form = forms.MealSignups(request.POST, initial=initial)
+		form = forms.MealSignups(request.user, request.POST, initial=initial)
 		if form.is_valid():
 			form.save(request.user, existing_signups)
 

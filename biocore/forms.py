@@ -5,6 +5,7 @@ from biocore.models import User, Travel, Meal, MealSignup
 from biocore.fields import UneditableText
 from django.utils import timezone
 import datetime
+from crispy_forms.helper import FormHelper
 
 class UserCreationForm(forms.ModelForm):
     """
